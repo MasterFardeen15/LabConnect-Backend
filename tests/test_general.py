@@ -36,7 +36,7 @@ def test_discover_route(test_client: FlaskClient) -> None:
     #     "pay": 9000.0,
     # }
 
-
+#What I want to test
 def test_profile_page(test_client: FlaskClient) -> None:
     """
     GIVEN a Flask application configured for testing

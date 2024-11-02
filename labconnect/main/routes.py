@@ -1,6 +1,7 @@
 from typing import Any
 
 from flask import abort, request
+from flask import jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from labconnect import db
@@ -71,6 +72,8 @@ def departmentDetails(department: str):
             User.first_name,
             User.preferred_name,
             User.last_name,
+            #*
+            #Connecting to actual picture?
             User.profile_picture,
         )
         .join(LabManager, User.lab_manager_id == LabManager.id)
@@ -164,18 +167,39 @@ def departmentDetails(department: str):
 
 #     return result
 
+#*
 
+# @main_blueprint.get("/profile")
+# def profile():
+#     request_data = request.get_json()
+#     id = request_data.get("id", None)
+
+#     # Maybe done already TODO: Fix to a join query
+#     lab_manager = db.first_or_404(db.select(LabManager).where(LabManager.id == id))
+#     user = db.first_or_404(db.select(User).where(User.lab_manager_id == id))
+
+#     result = lab_manager.to_dict() | user.to_dict()
+
+#     data = db.session.execute(
+#         db.select(Opportunities, Leads)
+#         .where(Leads.lab_manager_id == lab_manager.id)
+#         .join(Opportunities, Leads.opportunity_id == Opportunities.id)
+#     ).scalars()
+
+#     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
+
+#     return result
 @main_blueprint.get("/profile")
 def profile():
-    request_data = request.get_json()
-    id = request_data.get("id", None)
+    id = request.args.get("id", None)  # Get 'id' from query parameters
 
-    # TODO: Fix to a join query
+    # Fetch the lab manager and user based on the id
     lab_manager = db.first_or_404(db.select(LabManager).where(LabManager.id == id))
     user = db.first_or_404(db.select(User).where(User.lab_manager_id == id))
 
-    result = lab_manager.to_dict() | user.to_dict()
+    result = {**lab_manager.to_dict(), **user.to_dict()}  # Combine dictionaries
 
+    # Query opportunities related to the lab manager
     data = db.session.execute(
         db.select(Opportunities, Leads)
         .where(Leads.lab_manager_id == lab_manager.id)
@@ -184,9 +208,10 @@ def profile():
 
     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
 
-    return result
+    return jsonify(result)  # Return a JSON response
 
 
+#*
 @main_blueprint.get("/staff/<string:id>")
 def getProfessorProfile(id: str):
 
@@ -195,6 +220,7 @@ def getProfessorProfile(id: str):
             User.preferred_name,
             User.first_name,
             User.last_name,
+            #*
             User.profile_picture,
             RPIDepartments.name,
             User.description,
