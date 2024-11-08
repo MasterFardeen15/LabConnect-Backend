@@ -95,6 +95,45 @@ elif sys.argv[1] == "create":
             row = ClassYears(class_year=row_item, active=True)
             db.session.add(row)
             db.session.commit()
+        
+        
+        #user_test =("66207", "wohlfs", "Sarah", "Wohlford", "Sarah", "203", "new.rcos.io", "Student", "profile pic", "2027", "1")
+
+        user_test_s = (
+            "66207",       # id (email w/o @rpi.edu?)
+            "wohlfs",      # email
+            "Sarah",       # first_name
+            "Wohlford",    # last_name
+            "Sarah",       # preferred_name
+            "CSCI",        # lab_manager_id
+            "new.rcos.io", # website
+            "Student",     # description
+            "profile pic", # profile_picture
+            2027,          # class_year
+            1              # active
+        )
+
+        # Add user_test data to the User table
+        user = User(
+            id=user_test_s[0],
+            email=user_test_s[1] + "@rpi.edu",
+            first_name=user_test_s[2],
+            last_name=user_test_s[3],
+            preferred_name=user_test_s[4],
+            lab_manager_id=user_test_s[5],
+            website=user_test_s[6],
+            description=user_test_s[7],
+            profile_picture=user_test_s[8],
+            class_year=user_test_s[9],
+            #active=bool(user_test[10])
+        )
+        lab_manager_2 = LabManager(department_id=user_test_s[5])
+
+        db.session.add(lab_manager_2)
+        db.session.commit()
+
+        #db.session.add(user)
+        #db.session.commit()
 
         lab_manager_rows = (
             ("led", "Duy", "Le", "CSCI", "database database database"),
@@ -115,6 +154,7 @@ elif sys.argv[1] == "create":
             ("goldd", "David", "Goldschmidt", "CSCI", "VIM master"),
             ("rami", "Rami", "Rami", "MTLE", "cubes are cool"),
             ("holm", "Mark", "Holmes", "MATH", "all about that math"),
+            ("sarah", "Sarah", "Wohlford", "CSCI", "me"),
         )
 
         raf_test_user = (
@@ -135,6 +175,7 @@ elif sys.argv[1] == "create":
         db.session.commit()
 
         user = User(
+            #Not everything is getting into the table
             id=raf_test_user[0],
             email=raf_test_user[0] + "@rpi.edu",
             first_name=raf_test_user[1],
@@ -143,6 +184,7 @@ elif sys.argv[1] == "create":
             class_year=raf_test_user[4],
             lab_manager_id=lab_manager.id,
             description=raf_test_user[6],
+            #Profile
             profile_picture=raf_test_user[7],
             website=raf_test_user[8],
         )
@@ -155,14 +197,16 @@ elif sys.argv[1] == "create":
 
             db.session.add(lab_manager)
             db.session.commit()
-
+            print(row_tuple[0])
             user = User(
                 id=row_tuple[0],
                 email=row_tuple[0] + "@rpi.edu",
                 first_name=row_tuple[1],
                 last_name=row_tuple[2],
+                preferred_name = row_tuple[0],
                 lab_manager_id=lab_manager.id,
                 description=row_tuple[4],
+                #Profile
                 profile_picture="https://www.svgrepo.com/show/206842/professor.svg",
             )
             db.session.add(user)
@@ -233,6 +277,22 @@ elif sys.argv[1] == "create":
                 datetime.now(),
                 LocationEnum.JEC,
             ),
+            (
+                "Test",
+                "something",
+                "Understanding something",
+                None,
+                False,
+                False,
+                True,
+                True,
+                SemesterEnum.SPRING,
+                2024,
+                date.today(),
+                True,
+                datetime.now(),
+                LocationEnum.JEC,
+            ),
         )
 
         for row_tuple in opportunities_rows:
@@ -263,6 +323,7 @@ elif sys.argv[1] == "create":
         )
 
         for row_tuple in courses_rows:
+            #print(row_tuple[1])
             row = Courses(code=row_tuple[0], name=row_tuple[1])
             db.session.add(row)
             db.session.commit()
@@ -352,6 +413,7 @@ elif sys.argv[1] == "create":
                 last_name=r[3],
                 preferred_name=r[4],
                 class_year=r[5],
+                #Profile
                 profile_picture="https://www.svgrepo.com/show/206842/professor.svg",
             )
             db.session.add(row)

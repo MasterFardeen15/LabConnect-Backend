@@ -1,7 +1,6 @@
 from typing import Any
 
 from flask import abort, request
-from flask import jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from labconnect import db
@@ -23,6 +22,21 @@ from labconnect.models import (
     UserDepartments,
     UserMajors,
 )
+
+#User Data
+# user
+# ['id', 'email', 'first_name', 'last_name', 'preferred_name', 'phone_number', 'website', 'description', 'profile_picture', 'class_year', 'lab_manager_id']
+# <User> Rafael Cenzano
+# <User> Duy Le
+# <User> Wes Turner
+# <User> Konstantine Kuzmin
+# <User> David Goldschmidt
+# <User> Rami Rami
+# <User> Mark Holmes
+# <User> RCOS RCOS
+# <User> RCOS RCOS
+# <User> RCOS RCOS
+
 
 from . import main_blueprint
 
@@ -73,7 +87,7 @@ def departmentDetails(department: str):
             User.preferred_name,
             User.last_name,
             #*
-            #Connecting to actual picture?
+            #Connecting to picture?
             User.profile_picture,
         )
         .join(LabManager, User.lab_manager_id == LabManager.id)
@@ -191,13 +205,14 @@ def departmentDetails(department: str):
 #     return result
 @main_blueprint.get("/profile")
 def profile():
-    id = request.args.get("id", None)  # Get 'id' from query parameters
+    request_data = request.get_json()
+    id = request_data.get("id", None)
 
     # Fetch the lab manager and user based on the id
     lab_manager = db.first_or_404(db.select(LabManager).where(LabManager.id == id))
     user = db.first_or_404(db.select(User).where(User.lab_manager_id == id))
 
-    result = {**lab_manager.to_dict(), **user.to_dict()}  # Combine dictionaries
+    result = lab_manager.to_dict() | user.to_dict()
 
     # Query opportunities related to the lab manager
     data = db.session.execute(
@@ -208,7 +223,7 @@ def profile():
 
     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
 
-    return jsonify(result)  # Return a JSON response
+    return result
 
 
 #*
