@@ -97,43 +97,8 @@ elif sys.argv[1] == "create":
             db.session.commit()
         
         
-        #user_test =("66207", "wohlfs", "Sarah", "Wohlford", "Sarah", "203", "new.rcos.io", "Student", "profile pic", "2027", "1")
-
-        user_test_s = (
-            "66207",       # id (email w/o @rpi.edu?)
-            "wohlfs",      # email
-            "Sarah",       # first_name
-            "Wohlford",    # last_name
-            "Sarah",       # preferred_name
-            "CSCI",        # lab_manager_id
-            "new.rcos.io", # website
-            "Student",     # description
-            "profile pic", # profile_picture
-            2027,          # class_year
-            1              # active
-        )
-
-        # Add user_test data to the User table
-        user = User(
-            id=user_test_s[0],
-            email=user_test_s[1] + "@rpi.edu",
-            first_name=user_test_s[2],
-            last_name=user_test_s[3],
-            preferred_name=user_test_s[4],
-            lab_manager_id=user_test_s[5],
-            website=user_test_s[6],
-            description=user_test_s[7],
-            profile_picture=user_test_s[8],
-            class_year=user_test_s[9],
-            #active=bool(user_test[10])
-        )
-        lab_manager_2 = LabManager(department_id=user_test_s[5])
-
-        db.session.add(lab_manager_2)
-        db.session.commit()
-
-        #db.session.add(user)
-        #db.session.commit()
+        
+        
 
         lab_manager_rows = (
             ("led", "Duy", "Le", "CSCI", "database database database"),
@@ -154,7 +119,7 @@ elif sys.argv[1] == "create":
             ("goldd", "David", "Goldschmidt", "CSCI", "VIM master"),
             ("rami", "Rami", "Rami", "MTLE", "cubes are cool"),
             ("holm", "Mark", "Holmes", "MATH", "all about that math"),
-            ("sarah", "Sarah", "Wohlford", "CSCI", "me"),
+            #("sarah", "Sarah", "Wohlford", "CSCI", "me"),
         )
 
         raf_test_user = (
@@ -169,13 +134,27 @@ elif sys.argv[1] == "create":
             "https://rafaelcenzano.com",
         )
 
+        sarah_test_user = (
+            "wohlfs",
+            "Sarah",
+            "Wohlford",
+            "Sarah",
+            2027,
+            "CSCI",
+            ":)",
+            "https://www.svgrepo.com/show/226367/user-seo-and-web.svg",
+            "https://sarahwohlford.com",
+        )
+
         lab_manager = LabManager(department_id=raf_test_user[5])
+        lab_manager2 = LabManager(department_id=sarah_test_user[5])
 
         db.session.add(lab_manager)
+        db.session.add(lab_manager2)
         db.session.commit()
-
+        #profile_picture = "hold"
         user = User(
-            #Not everything is getting into the table
+            #Not everything is getting printed out -> it is in there 
             id=raf_test_user[0],
             email=raf_test_user[0] + "@rpi.edu",
             first_name=raf_test_user[1],
@@ -184,12 +163,27 @@ elif sys.argv[1] == "create":
             class_year=raf_test_user[4],
             lab_manager_id=lab_manager.id,
             description=raf_test_user[6],
-            #Profile
+            #Profile pic
             profile_picture=raf_test_user[7],
             website=raf_test_user[8],
         )
 
-        db.session.add(user)
+        user2 = User(
+            #Not everything is getting printed out -> it is in there 
+            id=raf_test_user[0],
+            email=raf_test_user[0] + "@rpi.edu",
+            first_name=raf_test_user[1],
+            last_name=raf_test_user[2],
+            preferred_name=raf_test_user[3],
+            class_year=raf_test_user[4],
+            lab_manager_id=lab_manager.id,
+            description=raf_test_user[6],
+            #Profile pic
+            profile_picture=raf_test_user[7],
+            website=raf_test_user[8],
+        )
+        #print(profile_picture)
+        db.session.add(user2)
         db.session.commit()
 
         for row_tuple in lab_manager_rows:
@@ -197,7 +191,8 @@ elif sys.argv[1] == "create":
 
             db.session.add(lab_manager)
             db.session.commit()
-            print(row_tuple[0])
+            #print(row_tuple[1])
+            #print(row_tuple[7])
             user = User(
                 id=row_tuple[0],
                 email=row_tuple[0] + "@rpi.edu",
@@ -423,6 +418,7 @@ elif sys.argv[1] == "create":
             ("cenzar", "MATH"),
             ("cenzar", "CSCI"),
             ("test", "CSCI"),
+            #("wohlfs", "CSCI")
         )
 
         for r in user_majors:
@@ -436,6 +432,7 @@ elif sys.argv[1] == "create":
             ("cenzar", "CSCI2300", False),
             ("cenzar", "CSCI4430", True),
             ("test", "CSCI2300", False),
+            #("wohlfs", "CSCI4430", True),
         )
 
         for r in user_courses:
@@ -448,6 +445,8 @@ elif sys.argv[1] == "create":
             ("cenzar", 2),
             ("test", 3),
             ("test", 4),
+            #("wohlfs", 1),
+            #("wohlfs", 2),
         )
 
         for r in participates_rows:
@@ -484,6 +483,8 @@ elif sys.argv[1] == "create":
             print(attr_names)
             for row in result:
                 print(row)
+                if table == User:
+                    print("Profile picture:", row.profile_picture)
             print()
 
         print("Number of tables:", len(tables))

@@ -23,21 +23,6 @@ from labconnect.models import (
     UserMajors,
 )
 
-#User Data
-# user
-# ['id', 'email', 'first_name', 'last_name', 'preferred_name', 'phone_number', 'website', 'description', 'profile_picture', 'class_year', 'lab_manager_id']
-# <User> Rafael Cenzano
-# <User> Duy Le
-# <User> Wes Turner
-# <User> Konstantine Kuzmin
-# <User> David Goldschmidt
-# <User> Rami Rami
-# <User> Mark Holmes
-# <User> RCOS RCOS
-# <User> RCOS RCOS
-# <User> RCOS RCOS
-
-
 from . import main_blueprint
 
 
