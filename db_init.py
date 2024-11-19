@@ -56,25 +56,10 @@ elif sys.argv[1] == "create":
         rpi_departments_rows = (
             ("Computer Science", "DS is rough", "School of Science", "CSCI"),
             ("Biology", "life science", "School of Science", "BIOL"),
-            (
-                "Materials Engineering",
-                "also pretty cool",
-                "School of Engineering",
-                "MTLE",
-            ),
-            (
-                "Environmental Engineering",
-                "water stuff",
-                "School of Engineering",
-                "ENVE",
-            ),
+            ("Materials Engineering", "also pretty cool", "School of Engineering","MTLE"),
+            ("Environmental Engineering", "water stuff", "School of Engineering", "ENVE"),
             ("Math", "quick maths", "School of Science", "MATH"),
-            (
-                "Mechanical, Aerospace, and Nuclear Engineering",
-                "space, the final frontier",
-                "School of Engineering",
-                "MANE",
-            ),
+            ("Mechanical, Aerospace, and Nuclear Engineering", "space, the final frontier", "School of Engineering","MANE"),
         )
 
         for row_tuple in rpi_departments_rows:
@@ -94,32 +79,16 @@ elif sys.argv[1] == "create":
         for row_item in class_years_rows:
             row = ClassYears(class_year=row_item, active=True)
             db.session.add(row)
-            db.session.commit()
-        
-        
-        
-        
+            db.session.commit()    
 
         lab_manager_rows = (
-            ("led", "Duy", "Le", "CSCI", "database database database"),
-            (
-                "turner",
-                "Wes",
-                "Turner",
-                "CSCI",
-                "open source stuff is cool",
-            ),
-            (
-                "kuzmin",
-                "Konstantine",
-                "Kuzmin",
-                "CSCI",
-                "java, psoft, etc.",
-            ),
-            ("goldd", "David", "Goldschmidt", "CSCI", "VIM master"),
-            ("rami", "Rami", "Rami", "MTLE", "cubes are cool"),
-            ("holm", "Mark", "Holmes", "MATH", "all about that math"),
-            #("sarah", "Sarah", "Wohlford", "CSCI", "me"),
+            ("duyl", "Duy", "Le", "CSCI", "database database database", "led"),
+            ("turnew2", "Wes", "Turner", "CSCI", "open source stuff is cool","turner"),
+            ("kuzmik2","Konstantine", "Kuzmin", "CSCI", "java, psoft, etc.","kuzmin"),
+            ("goldsd3", "David", "Goldschmidt", "CSCI", "VIM master", "goldd"),
+            ("ramir", "Rami", "Rami", "MTLE", "cubes are cool", "rami"),
+            ("holmes","Mark", "Holmes", "MATH", "all about that math", "holmm"),
+            ("wohlfs", "Sarah", "Wohlford", "CSCI", "me", "sarah"),
         )
 
         raf_test_user = (
@@ -135,26 +104,26 @@ elif sys.argv[1] == "create":
         )
 
         sarah_test_user = (
-            "wohlfs",
-            "Sarah",
-            "Wohlford",
-            "Sarah",
-            2027,
-            "CSCI",
-            ":)",
-            "https://www.svgrepo.com/show/226367/user-seo-and-web.svg",
-            "https://sarahwohlford.com",
+             "wohlfs",
+             "Sarah",
+             "Wohlford",
+             "Sarah",
+             2027,
+             "CSCI",
+             ":)",
+             "https://www.svgrepo.com/show/226367/user-seo-and-web.svg",
+             "https://sarahwohlford.com",
         )
 
         lab_manager = LabManager(department_id=raf_test_user[5])
         lab_manager2 = LabManager(department_id=sarah_test_user[5])
 
         db.session.add(lab_manager)
+        db.session.commit()
         db.session.add(lab_manager2)
         db.session.commit()
-        #profile_picture = "hold"
-        user = User(
-            #Not everything is getting printed out -> it is in there 
+
+        user = User( 
             id=raf_test_user[0],
             email=raf_test_user[0] + "@rpi.edu",
             first_name=raf_test_user[1],
@@ -168,37 +137,39 @@ elif sys.argv[1] == "create":
             website=raf_test_user[8],
         )
 
-        user2 = User(
-            #Not everything is getting printed out -> it is in there 
-            id=raf_test_user[0],
-            email=raf_test_user[0] + "@rpi.edu",
-            first_name=raf_test_user[1],
-            last_name=raf_test_user[2],
-            preferred_name=raf_test_user[3],
-            class_year=raf_test_user[4],
-            lab_manager_id=lab_manager.id,
-            description=raf_test_user[6],
-            #Profile pic
-            profile_picture=raf_test_user[7],
-            website=raf_test_user[8],
-        )
-        #print(profile_picture)
-        db.session.add(user2)
+        db.session.add(user)
         db.session.commit()
+
+        # user2 = User(
+        #      id=raf_test_user[0],
+        #      email=raf_test_user[0] + "@rpi.edu",
+        #      first_name=raf_test_user[1],
+        #      last_name=raf_test_user[2],
+        #      preferred_name=raf_test_user[3],
+        #      class_year=raf_test_user[4],
+        #      lab_manager_id=lab_manager.id,
+        #      description=raf_test_user[6],
+        #      #Profile pic
+        #      profile_picture=raf_test_user[7],
+        #      website=raf_test_user[8],
+        #  )
+        
+        # db.session.add(user2)
+        # db.session.commit()
+       
+        
 
         for row_tuple in lab_manager_rows:
             lab_manager = LabManager(department_id=row_tuple[3])
 
             db.session.add(lab_manager)
             db.session.commit()
-            #print(row_tuple[1])
-            #print(row_tuple[7])
             user = User(
                 id=row_tuple[0],
                 email=row_tuple[0] + "@rpi.edu",
                 first_name=row_tuple[1],
                 last_name=row_tuple[2],
-                preferred_name = row_tuple[0],
+                preferred_name = row_tuple[5],
                 lab_manager_id=lab_manager.id,
                 description=row_tuple[4],
                 #Profile
@@ -318,7 +289,6 @@ elif sys.argv[1] == "create":
         )
 
         for row_tuple in courses_rows:
-            #print(row_tuple[1])
             row = Courses(code=row_tuple[0], name=row_tuple[1])
             db.session.add(row)
             db.session.commit()
@@ -330,6 +300,7 @@ elif sys.argv[1] == "create":
             ("MATH", "Mathematics"),
             ("COGS", "Cognitive Science"),
             ("PHYS", "Physics"),
+            ("MANE", "Aeronautical Engineering"),
         )
 
         for row_tuple in majors_rows:
@@ -408,7 +379,7 @@ elif sys.argv[1] == "create":
                 last_name=r[3],
                 preferred_name=r[4],
                 class_year=r[5],
-                #Profile
+                #Profile this picture is currently given to all users except Raf 
                 profile_picture="https://www.svgrepo.com/show/206842/professor.svg",
             )
             db.session.add(row)
@@ -418,7 +389,6 @@ elif sys.argv[1] == "create":
             ("cenzar", "MATH"),
             ("cenzar", "CSCI"),
             ("test", "CSCI"),
-            #("wohlfs", "CSCI")
         )
 
         for r in user_majors:
@@ -432,7 +402,6 @@ elif sys.argv[1] == "create":
             ("cenzar", "CSCI2300", False),
             ("cenzar", "CSCI4430", True),
             ("test", "CSCI2300", False),
-            #("wohlfs", "CSCI4430", True),
         )
 
         for r in user_courses:
@@ -445,8 +414,6 @@ elif sys.argv[1] == "create":
             ("cenzar", 2),
             ("test", 3),
             ("test", 4),
-            #("wohlfs", 1),
-            #("wohlfs", 2),
         )
 
         for r in participates_rows:
@@ -484,7 +451,18 @@ elif sys.argv[1] == "create":
             for row in result:
                 print(row)
                 if table == User:
+                    print("Id:", row.id)
+                    print("Email:", row.email)
+                    print("First name:", row.first_name)
+                    print("Last name:", row.last_name)
+                    print("Preferred name:", row.preferred_name)
+                    print("Phone number:", row.phone_number)
+                    print("Website:", row.website)
+                    print("Description:", row.description)
                     print("Profile picture:", row.profile_picture)
+                    print("Class year:", row.class_year)
+                    print("Lab manager id:", row.lab_manager_id)
+                    print("")
             print()
 
         print("Number of tables:", len(tables))

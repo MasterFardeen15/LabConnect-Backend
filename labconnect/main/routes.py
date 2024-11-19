@@ -71,8 +71,6 @@ def departmentDetails(department: str):
             User.first_name,
             User.preferred_name,
             User.last_name,
-            #*
-            #Connecting to picture?
             User.profile_picture,
         )
         .join(LabManager, User.lab_manager_id == LabManager.id)
@@ -166,7 +164,6 @@ def departmentDetails(department: str):
 
 #     return result
 
-#*
 
 # @main_blueprint.get("/profile")
 # def profile():
@@ -211,7 +208,6 @@ def profile():
     return result
 
 
-#*
 @main_blueprint.get("/staff/<string:id>")
 def getProfessorProfile(id: str):
 
@@ -220,7 +216,6 @@ def getProfessorProfile(id: str):
             User.preferred_name,
             User.first_name,
             User.last_name,
-            #*
             User.profile_picture,
             RPIDepartments.name,
             User.description,
