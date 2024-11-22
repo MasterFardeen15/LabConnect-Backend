@@ -88,7 +88,7 @@ elif sys.argv[1] == "create":
             ("goldsd3", "David", "Goldschmidt", "CSCI", "VIM master", "goldd"),
             ("ramir", "Rami", "Rami", "MTLE", "cubes are cool", "rami"),
             ("holmes","Mark", "Holmes", "MATH", "all about that math", "holmm"),
-            ("wohlfs", "Sarah", "Wohlford", "CSCI", "me", "sarah"),
+            ("wohlfs", "Sarah", "Wohlford", "CSCI", "Hi", "sarah"),
         )
 
         raf_test_user = (
@@ -103,24 +103,9 @@ elif sys.argv[1] == "create":
             "https://rafaelcenzano.com",
         )
 
-        sarah_test_user = (
-             "wohlfs",
-             "Sarah",
-             "Wohlford",
-             "Sarah",
-             2027,
-             "CSCI",
-             ":)",
-             "https://www.svgrepo.com/show/226367/user-seo-and-web.svg",
-             "https://sarahwohlford.com",
-        )
-
         lab_manager = LabManager(department_id=raf_test_user[5])
-        lab_manager2 = LabManager(department_id=sarah_test_user[5])
 
         db.session.add(lab_manager)
-        db.session.commit()
-        db.session.add(lab_manager2)
         db.session.commit()
 
         user = User( 
@@ -132,32 +117,12 @@ elif sys.argv[1] == "create":
             class_year=raf_test_user[4],
             lab_manager_id=lab_manager.id,
             description=raf_test_user[6],
-            #Profile pic
             profile_picture=raf_test_user[7],
             website=raf_test_user[8],
         )
 
         db.session.add(user)
-        db.session.commit()
-
-        # user2 = User(
-        #      id=raf_test_user[0],
-        #      email=raf_test_user[0] + "@rpi.edu",
-        #      first_name=raf_test_user[1],
-        #      last_name=raf_test_user[2],
-        #      preferred_name=raf_test_user[3],
-        #      class_year=raf_test_user[4],
-        #      lab_manager_id=lab_manager.id,
-        #      description=raf_test_user[6],
-        #      #Profile pic
-        #      profile_picture=raf_test_user[7],
-        #      website=raf_test_user[8],
-        #  )
-        
-        # db.session.add(user2)
-        # db.session.commit()
-       
-        
+        db.session.commit()    
 
         for row_tuple in lab_manager_rows:
             lab_manager = LabManager(department_id=row_tuple[3])
@@ -172,7 +137,7 @@ elif sys.argv[1] == "create":
                 preferred_name = row_tuple[5],
                 lab_manager_id=lab_manager.id,
                 description=row_tuple[4],
-                #Profile
+                #All users get professor profile
                 profile_picture="https://www.svgrepo.com/show/206842/professor.svg",
             )
             db.session.add(user)
@@ -379,7 +344,6 @@ elif sys.argv[1] == "create":
                 last_name=r[3],
                 preferred_name=r[4],
                 class_year=r[5],
-                #Profile this picture is currently given to all users except Raf 
                 profile_picture="https://www.svgrepo.com/show/206842/professor.svg",
             )
             db.session.add(row)
@@ -449,6 +413,7 @@ elif sys.argv[1] == "create":
             print(f"{table.__tablename__}")
             print(attr_names)
             for row in result:
+                #Print user information
                 print(row)
                 if table == User:
                     print("Id:", row.id)
@@ -462,6 +427,10 @@ elif sys.argv[1] == "create":
                     print("Profile picture:", row.profile_picture)
                     print("Class year:", row.class_year)
                     print("Lab manager id:", row.lab_manager_id)
+                    print("")
+                if table == Opportunities:
+                    print("Name:", row.name)
+                    print("Description:", row.description)
                     print("")
             print()
 

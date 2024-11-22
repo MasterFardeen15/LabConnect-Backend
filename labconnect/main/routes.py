@@ -1,30 +1,30 @@
-from typing import Any
+#from typing import Any
 
 from flask import abort, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+#from flask_jwt_extended import get_jwt_identity, jwt_required
+
 
 from labconnect import db
 from labconnect.models import (
-    ClassYears,
-    Courses,
+    #ClassYears,
+    #Courses,
     LabManager,
     Leads,
-    Majors,
+    #Majors,
     Opportunities,
-    Participates,
-    RecommendsClassYears,
-    RecommendsCourses,
-    RecommendsMajors,
+    #Participates,
+    #RecommendsClassYears,
+    #RecommendsCourses,
+    #RecommendsMajors,
     RPIDepartments,
-    RPISchools,
+    #RPISchools,
     User,
-    UserCourses,
-    UserDepartments,
-    UserMajors,
+    #UserCourses,
+    #UserDepartments,
+    #UserMajors,
 )
 
 from . import main_blueprint
-
 
 @main_blueprint.get("/")
 def index():
@@ -51,7 +51,6 @@ def departmentCards():
 
 @main_blueprint.get("/departments/<string:department>")
 def departmentDetails(department: str):
-
     department_data = db.session.execute(
         db.select(
             RPIDepartments.id,
@@ -93,11 +92,10 @@ def departmentDetails(department: str):
                 "image": staff[4],
             }
             for staff in staff_data
-        ],
+        ]
     }
 
     return result
-
 
 # @main_blueprint.get("/getSchoolsAndDepartments/")
 # def getSchoolsAndDepartments():
@@ -185,27 +183,61 @@ def departmentDetails(department: str):
 #     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
 
 #     return result
+
+
+
+# @main_blueprint.get("/profile")
+# def profile():
+#     request_data = request.get_json()
+#     id = request_data.get("id", None)
+
+#     # Fetch the lab manager and user based on the id
+#     lab_manager = db.first_or_404(db.select(LabManager).where(LabManager.id == id))
+#     user = db.first_or_404(db.select(User).where(User.lab_manager_id == id))
+
+#     result = lab_manager.to_dict() | user.to_dict()
+
+#     # Query opportunities related to the lab manager
+#     data = db.session.execute(
+#         db.select(Opportunities, Leads)
+#         .where(Leads.lab_manager_id == lab_manager.id)
+#         #Get opp id from lead opp id
+#         .join(Opportunities, Leads.opportunity_id == Opportunities.id)
+#     ).scalars()
+
+#     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
+
+#     return result
+
+
 @main_blueprint.get("/profile")
 def profile():
     request_data = request.get_json()
-    id = request_data.get("id", None)
+    
+    # Check data
+    if not request_data or "id" not in request_data:
+        return {"error": "Missing 'id' in request data"}, 400
+    #except ValueError:
+        #return {"error": "Invalid 'id' format"}, 400
 
-    # Fetch the lab manager and user based on the id
+    # Get lab manager and related user
     lab_manager = db.first_or_404(db.select(LabManager).where(LabManager.id == id))
     user = db.first_or_404(db.select(User).where(User.lab_manager_id == id))
-
+    
+    # Combine lab manager and user data
     result = lab_manager.to_dict() | user.to_dict()
 
-    # Query opportunities related to the lab manager
+    # Get opportunities -> Query opportunities related to the lab manager
     data = db.session.execute(
-        db.select(Opportunities, Leads)
+        db.select(Opportunities)
+        .join(Leads, Leads.opportunity_id == Opportunities.id)
         .where(Leads.lab_manager_id == lab_manager.id)
-        .join(Opportunities, Leads.opportunity_id == Opportunities.id)
     ).scalars()
 
     result["opportunities"] = [opportunity.to_dict() for opportunity in data]
 
-    return result
+    return result, 200
+
 
 
 @main_blueprint.get("/staff/<string:id>")
