@@ -61,15 +61,14 @@ def test_client():
 #     db.drop_all()
 
 
-# @pytest.fixture(scope="function")
-# def log_in_default_user(test_client):
-#     test_client.post(
-#         "/login", data={"email": "patkennedy79@gmail.com", "password": "FlaskIsAwesome"}
-#     )
+@pytest.fixture(scope="function")
+def log_in_default_user(test_client):
+    test_client.post(
+        "/login", data={"email": "patkennedy79@gmail.com", "password": "FlaskIsAwesome"}
+    )
 
-#     yield  # this is where the testing happens!
-
-#     test_client.get("/logout")
+    yield  # this is where the testing happens!
+    test_client.get("/logout")
 
 
 # @pytest.fixture(scope="function")

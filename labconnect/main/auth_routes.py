@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from flask import current_app, make_response, redirect, request, abort
+from flask import current_app, make_response, redirect, request, abort, login_user, url_for, Flask, get_user
+#from flask_login import login_user
 from flask_jwt_extended import create_access_token
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
+from logging.config import dictConfig
 
 from labconnect import db
 from labconnect.helpers import prepare_flask_request
@@ -14,6 +16,11 @@ from labconnect.models import (
     UserMajors,
     ManagementPermissions,
 )
+import logging
+from logging.handlers import SMTPHandler
+from flask.logging import default_handler
+#app.logger.removeHandler(default_handler)
+
 
 from . import main_blueprint
 
@@ -51,6 +58,65 @@ def validate_code_and_get_user_email(code: str) -> tuple[str | None, bool | None
 
     return None, None
 
+# @app.route('/login', methods=['POST'])
+# def login():
+#     user = get_user(request.form['username'])
+
+#     if user.check_password(request.form['password']):
+#         login_user(user)
+#         app.logger.info('%s logged in successfully', user.username)
+#         return redirect(url_for('index'))
+#     else:
+#         app.logger.info('%s failed to log in', user.username)
+#         abort(401)
+
+@main_blueprint.route('/login', methods=['POST'])
+def login():
+    User = get_user(request.form['username'])
+
+    if User.check_password(request.form['password']):
+        login_user(User)
+        current_app.logger.info('%s logged in successfully', User.username)
+        return redirect(url_for('index'))
+    else:
+        current_app.logger.info('%s failed to log in', User.username)
+        abort(401)
+
+
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
+
+app = Flask(__name__)
+
+#email errors to admins if want to add
+mail_handler = SMTPHandler(
+    mailhost='127.0.0.1',
+    fromaddr='server-error@example.com',
+    #Admin email goes here
+    toaddrs=['admin@example.com'],
+    subject='Application Error'
+)
+mail_handler.setLevel(logging.ERROR)
+mail_handler.setFormatter(logging.Formatter(
+    '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+))
+
+if not app.debug:
+    app.logger.addHandler(mail_handler)
 
 @main_blueprint.get("/login")
 def saml_login():
