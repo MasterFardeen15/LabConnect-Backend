@@ -58,18 +58,6 @@ def validate_code_and_get_user_email(code: str) -> tuple[str | None, bool | None
 
     return None, None
 
-# @app.route('/login', methods=['POST'])
-# def login():
-#     user = get_user(request.form['username'])
-
-#     if user.check_password(request.form['password']):
-#         login_user(user)
-#         app.logger.info('%s logged in successfully', user.username)
-#         return redirect(url_for('index'))
-#     else:
-#         app.logger.info('%s failed to log in', user.username)
-#         abort(401)
-
 @main_blueprint.route('/login', methods=['POST'])
 def login():
     User = get_user(request.form['username'])
@@ -81,6 +69,58 @@ def login():
     else:
         current_app.logger.info('%s failed to log in', User.username)
         abort(401)
+
+#Modified version
+@main_blueprint.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username or not password:
+        current_app.logger.warning('Login attempt with missing fields')
+        abort(400, "Username and password required")
+
+    user = get_user(username)
+    if user and user.check_password(password):
+        login_user(user)
+        current_app.logger.info('%s logged in successfully', user.username)
+        return redirect(url_for('index'))
+    else:
+        current_app.logger.warning('Failed login attempt for username: %s', username)
+        abort(401, "Invalid credentials")
+
+
+#Modified version
+def configure_logging(app):
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'DEBUG' if app.debug else 'INFO',
+            'handlers': ['wsgi']
+        }
+    })
+
+    #All general for now
+    if not app.debug:
+        mail_handler = SMTPHandler(
+            mailhost='127.0.0.1',
+            fromaddr='server-error@example.com',
+            toaddrs=['admin@example.com'],
+            subject='Application Error'
+        )
+        mail_handler.setLevel(logging.ERROR)
+        mail_handler.setFormatter(logging.Formatter(
+            '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+        ))
+        app.logger.addHandler(mail_handler)
 
 
 
