@@ -11,7 +11,6 @@ from datetime import date, datetime
 
 from labconnect import create_app, db
 from labconnect.helpers import LocationEnum, SemesterEnum
-from labconnect.models import LabManager  # Professors and Grad students
 from labconnect.models import (
     ClassYears,
     Courses,
@@ -30,6 +29,7 @@ from labconnect.models import (
     UserMajors,
     UserSavedOpportunities,
     Codes,
+    LabManager,
 )
 
 app = create_app()
