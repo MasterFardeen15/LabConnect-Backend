@@ -1,6 +1,5 @@
 # from typing import Any
 
-from typing import NoReturn
 from flask import abort, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
@@ -15,7 +14,6 @@ from labconnect.models import (
     Majors,
     Courses,
 )
-from labconnect.serializers import serialize_course
 
 from . import main_blueprint
 
@@ -193,8 +191,21 @@ def changeActiveStatus() -> dict[str, bool]:
 
 
 @main_blueprint.get("/500")
-def force_error() -> NoReturn:
+def force_error():
     abort(500)
+
+
+# @main_blueprint.get("/schools")
+# def schools() -> list[Any]:
+
+#     data = db.session.execute(db.select(RPISchools).order_by(RPISchools.name)).scalars()
+
+#     if not data:
+#         abort(404)
+
+#     result = [school.to_dict() for school in data]
+
+#     return result
 
 
 @main_blueprint.get("/majors")
@@ -256,7 +267,7 @@ def courses() -> list[str]:
     if not data:
         abort(404)
 
-    result = [serialize_course(course) for course in data]
+    result = [course.to_dict() for course in data]
 
     if result == []:
         abort(404)

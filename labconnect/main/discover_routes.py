@@ -10,7 +10,6 @@ from labconnect.models import (
     User,
     UserMajors,
 )
-from labconnect.serializers import serialize_opportunity
 
 from . import main_blueprint
 
@@ -65,5 +64,5 @@ def discover_data(jwt_identity, limit):
             .order_by(Opportunities.last_updated.desc())
         ).scalars()
 
-    result = [serialize_opportunity(opportunity) for opportunity in data]
+    result = [opportunity.to_dict() for opportunity in data]
     return result
